@@ -16,7 +16,7 @@ do
         gpg --armor --export $key
         printf "\n\n\n"
     elif [[ choice -eq 3 ]]; then
-        str=$(gpg --list-secret-keys --keyid-format=long | grep "sec" | tr ' ' '\n')
+        str=$(gpg --list-secret-keys --keyid-format=long | grep "sec")
         len=${#str}
         if [[ len -eq 0 ]]; then
             printf "There are no keys. Use (1) to generate one"
