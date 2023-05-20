@@ -9,8 +9,24 @@ do
         gpg --full-generate-key
         printf "\n\n\n~~~~Key Successfully Generated~~~~\n\n\n"
     elif [[ choice -eq 2 ]]; then
-        echo "Enter the gpg key you want to use"
-        read key
+        echo "Enter the gpg key code you want to use"
+        declare -A map
+        str=$(gpg --list-secret-keys --keyid-format=long | grep "sec")
+        i=0
+        j=0
+        for word in $str;
+        do
+            i=$(($i+1))
+            mod=$(($i % 4))
+            if [[ $mod -eq 2 ]]; then
+                j=$(($j+1))
+                result="${word#*/}"
+                map[$(echo $j)]=$result
+                echo "$j - $result"
+            fi
+        done
+        read ch
+        key=${map[$(echo $ch)]}
         git config --global user.signingkey "$key"
         printf "Fill this as your gpg key in your GitHub account\n\n\n"
         gpg --armor --export $key
@@ -21,7 +37,16 @@ do
         if [[ len -eq 0 ]]; then
             printf "There are no keys. Use (1) to generate one"
         else
-            echo -e $str
+            i=0
+            for word in $str; 
+            do
+                i=$(($i+1))
+                mod=$(($i % 4))
+                if [[ $mod -eq 2 ]]; then
+                    result="${word#*/}"
+                    echo $result
+                fi
+            done
         fi
     else
         break
